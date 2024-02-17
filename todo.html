@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #todo-container {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        button {
+            background-color: #e44d26;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="datetime-local"] {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="todo-container">
+        <h2>Pending Tasks</h2>
+        <ul id="pending-tasks"></ul>
+
+        <h2>Completed Tasks</h2>
+        <ul id="completed-tasks"></ul>
+
+        <div class="controls">
+            <input type="text" id="taskInput" placeholder="Add new task">
+            <input type="datetime-local" id="taskDateTime">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+    </div>
+
+    <script>
+        const pendingTasksList = document.getElementById('pending-tasks');
+        const completedTasksList = document.getElementById('completed-tasks');
+        const taskInput = document.getElementById('taskInput');
+        const taskDateTime = document.getElementById('taskDateTime');
+
+        function addTask() {
+            const taskText = taskInput.value;
+            const taskTime = taskDateTime.value;
+
+            if (taskText.trim() === "") {
+                alert("Please enter a valid task!");
+                return;
+            }
+
+            const task = document.createElement('li');
+            task.innerHTML = `
+                <span>${taskText}</span>
+                <span>${taskTime}</span>
+                <button onclick="completeTask(this)">Complete</button>
+                <button onclick="editTask(this)">Edit</button>
+                <button onclick="deleteTask(this)">Delete</button>
+            `;
+
+            pendingTasksList.appendChild(task);
+
+            // Clear input fields after adding a task
+            taskInput.value = "";
+            taskDateTime.value = "";
+        }
+
+        function completeTask(button) {
+            const task = button.parentElement;
+            task.classList.add('completed');
+            button.remove();
+
+            const timeSpan = task.querySelector('span:last-child');
+            const completionTime = new Date().toLocaleString();
+            timeSpan.textContent = `Completed at: ${completionTime}`;
+
+            completedTasksList.appendChild(task);
+        }
+
+        function editTask(button) {
+            const task = button.parentElement;
+            const taskText = task.querySelector('span:first-child');
+            const newTaskText = prompt("Edit task:", taskText.textContent);
+
+            if (newTaskText !== null) {
+                taskText.textContent = newTaskText;
+            }
+        }
+
+        function deleteTask(button) {
+            const task = button.parentElement;
+            task.remove();
+        }
+    </script>
+
+</body>
+</html>
